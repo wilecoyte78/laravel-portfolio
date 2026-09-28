@@ -57,7 +57,7 @@ return Application::configure(basePath: dirname(__DIR__))
             try {
                 $request = request();
 
-                Mail::to(($recipient)
+                Mail::to($recipient)
                     ->queue(new ExceptionOccurredMail([
                         'class' => $e::class,
                         'message' => $e->getMessage(),
