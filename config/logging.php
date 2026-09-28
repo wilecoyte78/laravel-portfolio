@@ -1,5 +1,6 @@
 <?php
 
+use App\Logging\SplitByLevel;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -135,6 +136,11 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'split' => [
+            'driver' => 'custom',
+            'via' => SplitByLevel::class,
+            'days' => 14,
+        ],
     ],
 
 ];
