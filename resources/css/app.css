@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Basic styling for admin-authored WYSIWYG content rendered on public pages */
+.prose img {
+  border-radius: 0.5rem;
+}
+
+/* Timeline marker on h3 headings (used for job titles on the Resume page).
+   Justified here specifically because that content is genuinely
+   chronological - not applied as decoration elsewhere. */
+.prose h3 {
+  position: relative;
+  padding-left: 1.15rem;
+}
+.prose h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: #B8863F;
+}

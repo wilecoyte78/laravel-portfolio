@@ -1,0 +1,154 @@
+# ---------------------------------------------------------------
+# Laravel
+# ---------------------------------------------------------------
+
+# Dependencies
+/vendor
+/node_modules
+
+# Environment files (never commit secrets; keep .env.example tracked)
+.env
+.env.*
+!.env.example
+!.env.testing.example
+
+# Composer auth (may contain tokens for private repos)
+/auth.json
+
+# Compiled assets / Vite / Mix
+/public/build
+/public/hot
+/public/mix-manifest.json
+/public/css
+/public/js
+/public/storage
+/public/vendor
+
+# Storage (framework keeps its own .gitignore files inside these dirs)
+/storage/*.key
+/storage/pail
+/storage/*.sqlite
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/app/public/*
+!/storage/**/.gitignore
+
+# Bootstrap cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# Local databases
+/database/*.sqlite
+/database/*.sqlite-journal
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing / coverage
+.phpunit.result.cache
+/.phpunit.cache
+/coverage
+/build
+.pest
+/tests/Browser/screenshots
+/tests/Browser/console
+/tests/Browser/source
+/test-results
+/playwright-report
+/playwright/.cache
+
+# Static analysis / code style caches
+.php-cs-fixer.cache
+.php_cs.cache
+.phpcs-cache
+.phpstan.cache
+.phpactor.json
+.psalm/
+.pint.cache
+.rector
+
+# Laravel ecosystem
+Homestead.json
+Homestead.yaml
+/.vagrant
+/docker-compose.override.yml
+/.ddev
+/.horizon
+/.telescope
+/public/vendor/telescope
+/public/vendor/horizon
+/public/vendor/livewire
+/resources/views/vendor/nova
+/nova
+/nova-components/*/node_modules
+/_ide_helper.php
+/_ide_helper_models.php
+/.phpstorm.meta.php
+/.rr.yaml
+rr
+/frankenphp
+/public/frankenphp-worker.php
+
+# Deployment
+/.envoy
+/deploy.php
+/.deployer
+/.capistrano
+/storage/*.pid
+
+# ---------------------------------------------------------------
+# IDEs / Editors
+# ---------------------------------------------------------------
+/.idea
+/.vscode
+/.fleet
+/.nova
+/.zed
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.project
+.settings/
+.buildpath
+.classpath
+
+# ---------------------------------------------------------------
+# OS files
+# ---------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------
+*.bak
+*.tmp
+*.orig
+*.rej
+.cache/
+.tmp/
+.temp/
+.sass-cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+*.tgz
+*.zip
+*.tar.gz
