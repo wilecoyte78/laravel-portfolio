@@ -1,25 +1,34 @@
+<?php
+
+// app/Mail/ExceptionOccurred.php
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Throwable;
 
-class ExceptionOccurredMail extends Mailable
+class ExceptionOccurredMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $exception;
+    public function __construct(public array $data) {}
 
-    public function __construct(Throwable $exception)
+    public function envelope(): Envelope
     {
-        $this->exception = $exception;
+        return new Envelope(
+            subject: sprintf('[%s] %s: %s',
+                strtoupper($this->data['env']),
+                class_basename($this->data['class']),
+                \Illuminate\Support\Str::limit($this->data['message'], 80),
+            ),
+        );
     }
 
-    public function build()
+    public function content(): Content
     {
-        return $this->view('emails.exception-pretty')
-                    ->subject('🚨 Application Exception Alert: ' . get_class($this->exception));
+        return new Content(markdown: 'emails.exception');
     }
 }
-

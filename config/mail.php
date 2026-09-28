@@ -115,4 +115,19 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Exception Report Recipient
+    |--------------------------------------------------------------------------
+    |
+    | Address that receives an email whenever an unhandled exception is
+    | reported in production. Sent through the queue and deduplicated, so
+    | the same exception only triggers one email every ten minutes.
+    |
+    | Leave empty to disable exception emails entirely. To notify more than
+    | one person, point this at a shared inbox or distribution list.
+    |
+    */
+
+    'exception_recipient' => env('MAIL_EXCEPTION_RECIPIENT', ''),
 ];

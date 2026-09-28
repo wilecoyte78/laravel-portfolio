@@ -2,11 +2,14 @@
 
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Mail\ExceptionOccurredMail;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use App\Mail\ExceptionOccurredMail;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -37,10 +40,39 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->reportable(function (Throwable $e) {
-            // Only send emails in production to avoid spam during local development
-            if (app()->environment('production')) {
-                Mail::to('admin@example.com')->send(new ExceptionOccurredMail($e));
+        $exceptions->report(function (Throwable $e) {
+            $recipient = config('mail.exception_recipient');
+
+            if (! app()->environment('production') && ! $recipient) {
+                return;
+            }
+
+            // Dedupe: one email per unique exception per 10 minutes
+            $key = 'exception-mail:'.md5($e::class.$e->getFile().$e->getLine());
+
+            if (! Cache::add($key, true, now()->addMinutes(10))) {
+                return;
+            }
+
+            try {
+                $request = request();
+
+                Mail::to(($recipient)
+                    ->queue(new ExceptionOccurredMail([
+                        'class' => $e::class,
+                        'message' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'trace' => Str::limit($e->getTraceAsString(), 5000),
+                        'url' => app()->runningInConsole() ? 'CLI: '.implode(' ', $_SERVER['argv'] ?? []) : $request->fullUrl(),
+                        'method' => app()->runningInConsole() ? null : $request->method(),
+                        'ip' => app()->runningInConsole() ? null : $request->ip(),
+                        'user' => optional($request->user())->only(['id', 'email']),
+                        'env' => app()->environment(),
+                        'time' => now()->toDateTimeString(),
+                    ]));
+            } catch (Throwable) {
+                // Never let error reporting throw its own error
             }
         });
     })->create();
