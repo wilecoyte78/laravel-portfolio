@@ -24,8 +24,8 @@ class PageSeoTest extends TestCase
                 'title' => 'Bio',
                 'slug' => 'bio',
                 'content' => '<p>Hello</p>',
-                'meta_title' => 'Ben Mastrangelo | Laravel Developer Bio',
-                'meta_description' => 'Senior Laravel developer based in Texas.',
+                'meta_title' => 'Laravel Developer Bio',
+                'meta_description' => 'Senior Laravel developer.',
                 'meta_keywords' => 'php, laravel, vue',
                 'is_published' => true,
             ])
@@ -33,8 +33,8 @@ class PageSeoTest extends TestCase
 
         $this->assertDatabaseHas('pages', [
             'slug' => 'bio',
-            'meta_title' => 'Ben Mastrangelo | Laravel Developer Bio',
-            'meta_description' => 'Senior Laravel developer based in Texas.',
+            'meta_title' => 'Laravel Developer Bio',
+            'meta_description' => 'Senior Laravel developer.',
             'meta_keywords' => 'php, laravel, vue',
         ]);
     }

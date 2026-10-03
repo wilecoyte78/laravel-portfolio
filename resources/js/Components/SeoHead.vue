@@ -9,7 +9,7 @@ import { SITE_NAME, DEFAULT_DESCRIPTION } from '@/seo';
  *
  * Title rules:
  *   1. metaTitle (the "SEO title" from the admin) is used exactly as entered.
- *   2. Otherwise "{title} - Benjamin Mastrangelo".
+ *   2. Otherwise "{title} - {APP_NAME}".
  *   3. With neither, just the site name (used for the home page).
  */
 const props = defineProps({

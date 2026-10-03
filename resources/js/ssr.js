@@ -13,7 +13,7 @@ createServer(
             page,
             render: renderToString,
             // Public pages build their full title in SeoHead; admin titles are used as-is.
-            title: (title) => title || 'Benjamin Mastrangelo',
+            title: (title) => title || import.meta.env.VITE_APP_NAME,
             resolve: (name) => {
                 const pages = import.meta.glob('./Pages/**/*.vue', { eager: true });
                 return pages[`./Pages/${name}.vue`];
