@@ -18,6 +18,7 @@ class ContactController extends Controller
 
         return Inertia::render('Public/Contact', [
             'page' => $page,
+            'calendlyUrl' => config('services.calendly.url'),
         ]);
     }
 

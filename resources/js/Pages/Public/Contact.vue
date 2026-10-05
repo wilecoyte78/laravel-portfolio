@@ -2,6 +2,11 @@
 import { useForm, usePage } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import SeoHead from '@/Components/SeoHead.vue';
+import CalendlyEmbed from '@/Components/CalendlyEmbed.vue';
+
+defineProps({
+    calendlyUrl: { type: String, default: null },
+});
 
 const inertiaPage = usePage();
 
@@ -35,8 +40,17 @@ function submit() {
                 <h1 class="font-display text-4xl text-ink">Let's talk</h1>
                 <p class="mt-4 max-w-[38ch] text-ink/70">
                     Hiring, consulting, or just have a question about how this site was built —
-                    send a message below and I'll get back to you.
+                    send a message and I'll get back to you.
                 </p>
+                <section v-if="calendlyUrl" class="mt-20 border-t border-ink/10 pt-12">
+                    <h2 class="font-display text-3xl text-ink">Book a call</h2>
+                    <p class="mt-3 max-w-[48ch] text-ink/70">
+                        Prefer to talk it through? Pick a time that works for you.
+                    </p>
+                    <div class="mt-8">
+                        <CalendlyEmbed :url="calendlyUrl" mode="popup" />
+                    </div>
+                </section>
             </div>
 
             <div>
