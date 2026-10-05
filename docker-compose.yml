@@ -102,14 +102,40 @@ services:
             - portfolio
 
         healthcheck:
-            test:
-                [
-                    "CMD-SHELL",
-                    "pg_isready -U ${DB_USERNAME:-portfolio} -d ${DB_DATABASE:-portfolio}",
-                ]
+            test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME:-portfolio} -d ${DB_DATABASE:-portfolio}" ]
             interval: 5s
             timeout: 5s
             retries: 10
+
+    vite:
+        build:
+            context: ./docker
+            dockerfile: Dockerfile
+            args:
+                HOST_UID: "${HOST_UID:-1000}"
+                HOST_GID: "${HOST_GID:-1000}"
+
+        container_name: "${CONTAINER_NAME:-portfolio}-vite"
+
+        working_dir: /var/www/html
+
+        user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+
+        command: sh -c "npm install && npm run dev"
+
+        ports:
+            - "${VITE_PORT:-5173}:5173"
+
+        volumes:
+            - ./:/var/www/html
+            - portfolio-node-modules:/var/www/html/node_modules
+
+        environment:
+            HOME: /tmp
+            NPM_CONFIG_CACHE: /tmp/.npm
+
+        networks:
+            - portfolio
 
 networks:
     portfolio:
