@@ -36,6 +36,7 @@ const navLinks = [
     { label: 'Navigation', href: route('admin.navigation.index') },
     { label: 'Resume', href: route('admin.resume.index') },
     { label: 'Database', href: route('admin.database.index') },
+    { label: 'Logs', href: route('admin.logs.index') },
 ];
 </script>
 

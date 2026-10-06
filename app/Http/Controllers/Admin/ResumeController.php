@@ -31,7 +31,7 @@ class ResumeController extends Controller
             ];
         }
 
-        return Inertia::render('Admin/Resume', [
+        return Inertia::render('Admin/Resume/Index', [
             'resume' => $resume,
         ]);
     }

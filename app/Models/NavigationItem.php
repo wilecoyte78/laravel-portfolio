@@ -6,6 +6,36 @@ use App\Enums\Target;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $label
+ * @property int|null $page_id
+ * @property int|null $parent_id
+ * @property string|null $external_url
+ * @property int $sort_order
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $target
+ * @property Target $targe
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, NavigationItem> $children
+ * @property-read int|null $children_count
+ * @property-read \App\Models\Page|null $page
+ * @property-read NavigationItem|null $parent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem roots()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereExternalUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereLabel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem wherePageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereSortOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereTarget($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|NavigationItem whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class NavigationItem extends Model
 {
     use HasFactory;

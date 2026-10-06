@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DatabaseViewerController;
 use App\Http\Controllers\Admin\GmailController;
+use App\Http\Controllers\Admin\LogViewerController;
 use App\Http\Controllers\Admin\NavigationController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ResumeController as AdminResumeController;
@@ -29,6 +30,8 @@ Route::get('/resume', [ResumeController::class, 'show'])->name('resume');
 // ------------------------------------------------------------------
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
+    Route::get('logs', [LogViewerController::class, 'index'])->name('logs.index');
 
     Route::resource('pages', PageController::class)->except(['show']);
 
