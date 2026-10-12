@@ -56,6 +56,10 @@ class PublicPageController extends Controller
 
     public function projects(): Response
     {
-        return Inertia::render('Public/Projects');
+        $page = Page::where('slug', 'projects')->first();
+
+        return Inertia::render('Public/Projects', [
+            'page' => $page,
+        ]);
     }
 }
