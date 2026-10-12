@@ -2,6 +2,14 @@
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import SeoHead from '@/Components/SeoHead.vue';
 
+const props = defineProps({
+    page: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
+
 const projects = [
     {
         number: '01',
