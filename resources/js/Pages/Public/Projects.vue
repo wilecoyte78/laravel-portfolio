@@ -72,10 +72,10 @@ const focusAreas = [
 <template>
     <PublicLayout>
         <SeoHead
-            title="Projects"
-            meta-title="Selected Projects | Senior PHP & Laravel Engineer"
-            description="Selected software engineering projects covering Laravel application development, enterprise modernization, SaaS architecture, and full-stack delivery."
-            keywords="Laravel projects, PHP software engineer, application modernization, full-stack development, SaaS"
+            :title="page?.title ?? 'Projects'"
+            :meta-title="page?.meta_title ?? ''"
+            :description="page?.meta_description ?? ''"
+            :keywords="page?.meta_keywords ?? ''"
         />
 
         <section aria-labelledby="projects-heading">
