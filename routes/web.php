@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ResumeController as AdminResumeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicPageController;
-use App\Http\Controllers\ResumeController;
 use Illuminate\Support\Facades\Route;
 
 // ------------------------------------------------------------------
@@ -23,7 +22,8 @@ Route::post('/contact', [ContactController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
 
-Route::get('/resume', [ResumeController::class, 'show'])->name('resume');
+Route::get('/resume', [PublicPageController::class, 'resume'])->name('resume');
+Route::get('/projects', [PublicPageController::class, 'projects'])->name('projects');
 
 // ------------------------------------------------------------------
 // Admin area (auth + is_admin required)
