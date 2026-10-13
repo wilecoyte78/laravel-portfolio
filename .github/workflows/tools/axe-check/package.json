@@ -1,0 +1,13 @@
+{
+  "name": "laravel-portfolio-axe-check",
+  "private": true,
+  "type": "module",
+  "description": "Renders laravel-portfolio's public Vue pages and runs axe-core WCAG 2.2 AA checks on them.",
+  "scripts": {
+    "check": "node run.mjs"
+  },
+  "dependencies": {
+    "axe-core": "^4.10.0",
+    "jsdom": "^25.0.0"
+  }
+}
