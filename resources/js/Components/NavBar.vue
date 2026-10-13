@@ -29,8 +29,26 @@ function onItemLeave(e) {
 function onDocPointerDown(e) {
     if (navRef.value && !navRef.value.contains(e.target)) close();
 }
+// Escape closes any open menu and returns focus to the button that opened it
+// so keyboard users are not left on a hidden element (WCAG 2.1.1, 2.4.3).
 function onKeydown(e) {
-    if (e.key === 'Escape') close();
+    if (e.key !== 'Escape') return;
+
+    if (openId.value !== null) {
+        const trigger = navRef.value?.querySelector(`[data-menu-trigger="${openId.value}"]`);
+        close();
+        trigger?.focus();
+    }
+
+    if (mobileMenuOpen.value) {
+        closeMobileMenu();
+        mobileToggleRef.value?.focus();
+    }
+}
+
+// Close a desktop dropdown once keyboard focus moves outside of it.
+function onItemFocusOut(e) {
+    if (!e.currentTarget.contains(e.relatedTarget)) close();
 }
 
 onMounted(() => {
@@ -44,6 +62,7 @@ onBeforeUnmount(() => {
 
 // Mobile menu
 const mobileMenuOpen = ref(false);
+const mobileToggleRef = ref(null);
 const mobileOpenId = ref(null);
 
 function toggleMobileMenu() {
@@ -60,24 +79,27 @@ function closeMobileMenu() {
 </script>
 
 <template>
-    <div v-if="items.length > 0">
+    <nav v-if="items.length > 0" ref="navRef" aria-label="Main">
         <!-- Desktop nav (hidden below md breakpoint) -->
-        <nav ref="navRef" class="hidden items-center gap-6 md:flex">
+        <div class="hidden items-center gap-6 md:flex">
             <template v-for="item in items" :key="item.id">
                 <div
                     v-if="item.children && item.children.length"
                     class="relative"
                     @pointerenter="onItemEnter($event, item.id)"
                     @pointerleave="onItemLeave($event)"
+                    @focusout="onItemFocusOut"
                 >
                     <button
                         type="button"
                         class="flex items-center gap-1 text-sm font-medium text-ink/70 hover:text-ink"
+                        :data-menu-trigger="item.id"
                         :aria-expanded="openId === item.id"
+                        :aria-controls="`nav-menu-${item.id}`"
                         @click="toggle(item.id)"
                     >
                         {{ item.label }}
-                        <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                        <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                         </svg>
                     </button>
@@ -85,6 +107,7 @@ function closeMobileMenu() {
                     <!-- pt-2 instead of mt-2: padding is part of this element, so hover stays continuous -->
                     <div
                         v-show="openId === item.id"
+                        :id="`nav-menu-${item.id}`"
                         class="absolute left-0 top-full z-20 min-w-[10rem] pt-2"
                     >
                         <div class="rounded-lg border border-ink/10 bg-paper py-1 shadow-lg">
@@ -120,20 +143,22 @@ function closeMobileMenu() {
                     {{ item.label }}
                 </NavLink>
             </template>
-        </nav>
+        </div>
 
         <!-- Mobile hamburger toggle (hidden at md and above) -->
         <button
             type="button"
+            ref="mobileToggleRef"
             class="inline-flex items-center justify-center rounded-md p-2 text-ink/70 hover:bg-ink/5 md:hidden"
             :aria-expanded="mobileMenuOpen"
-            aria-label="Toggle menu"
+            aria-controls="mobile-menu"
+            :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
             @click="toggleMobileMenu"
         >
-            <svg v-if="!mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg v-if="!mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
             </svg>
-            <svg v-else class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg v-else class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
@@ -141,6 +166,7 @@ function closeMobileMenu() {
         <!-- Mobile menu panel -->
         <div
             v-if="mobileMenuOpen"
+            id="mobile-menu"
             class="absolute inset-x-0 top-full z-30 border-b border-ink/10 bg-paper px-6 py-4 shadow-lg md:hidden"
         >
             <template v-for="item in items" :key="item.id">
@@ -148,6 +174,8 @@ function closeMobileMenu() {
                     <button
                         type="button"
                         class="flex w-full items-center justify-between py-2 text-left text-sm font-medium text-ink/70"
+                        :aria-expanded="mobileOpenId === item.id"
+                        :aria-controls="`mobile-nav-menu-${item.id}`"
                         @click="toggleMobileItem(item.id)"
                     >
                         {{ item.label }}
@@ -155,11 +183,12 @@ function closeMobileMenu() {
                             class="h-4 w-4 transition-transform"
                             :class="{ 'rotate-180': mobileOpenId === item.id }"
                             viewBox="0 0 20 20" fill="currentColor"
+                            aria-hidden="true" focusable="false"
                         >
                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <div v-show="mobileOpenId === item.id" class="ml-3 border-l border-ink/10 pl-3">
+                    <div v-show="mobileOpenId === item.id" :id="`mobile-nav-menu-${item.id}`" class="ml-3 border-l border-ink/10 pl-3">
                         <NavLink
                             v-if="item.url"
                             :href="item.url"
@@ -193,5 +222,5 @@ function closeMobileMenu() {
                 </NavLink>
             </template>
         </div>
-    </div>
+    </nav>
 </template>

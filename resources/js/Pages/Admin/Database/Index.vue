@@ -12,7 +12,7 @@ defineProps({
         <Head title="Database" />
 
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-slate-900">Database</h2>
+            <h1 class="text-xl font-semibold text-slate-900">Database</h1>
             <p class="mt-1 text-sm text-slate-500">
                 Read-only view of table contents. Secret-looking columns are masked.
             </p>
@@ -20,11 +20,12 @@ defineProps({
 
         <div class="max-w-2xl overflow-hidden rounded-lg border border-slate-200 bg-white">
             <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <caption class="sr-only">Database tables</caption>
                 <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                     <tr>
-                        <th class="px-4 py-3">Table</th>
-                        <th class="px-4 py-3 text-right">Rows</th>
-                        <th class="px-4 py-3 text-right">Columns</th>
+                        <th scope="col" class="px-4 py-3">Table</th>
+                        <th scope="col" class="px-4 py-3 text-right">Rows</th>
+                        <th scope="col" class="px-4 py-3 text-right">Columns</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

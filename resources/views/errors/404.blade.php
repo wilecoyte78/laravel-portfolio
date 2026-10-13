@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,13 +10,13 @@
     @vite(['resources/css/app.css'])
 </head>
 <body class="flex min-h-screen items-center justify-center bg-paper font-sans text-ink">
-    <div class="max-w-md px-6 text-center">
-        <p class="font-display text-7xl text-brass">404</p>
-        <h1 class="mt-4 font-display text-2xl text-ink">This page doesn't exist.</h1>
+    <main class="max-w-md px-6 text-center">
+        <p class="font-display text-7xl text-brass-dark" aria-hidden="true">404</p>
+        <h1 class="mt-4 font-display text-2xl text-ink"><span class="sr-only">Error 404: </span>This page doesn't exist.</h1>
         <p class="mt-3 text-ink/70">The link might be broken, or the page may have moved.</p>
-        <a href="/" class="mt-6 inline-block text-ink underline decoration-brass decoration-2 underline-offset-4 hover:text-brass">
+        <a href="/" class="mt-6 inline-block text-ink underline decoration-brass decoration-2 underline-offset-4 hover:text-brass-dark">
             Back to the homepage
         </a>
-    </div>
+    </main>
 </body>
 </html>

@@ -10,9 +10,13 @@ export default {
       colors: {
         ink: '#14171F',
         paper: '#F7F5F0',
+        // Decorative accent (borders, dots, underlines). 2.96:1 on paper, so
+        // never use it for text - use brass-dark instead (5.18:1, WCAG AA).
         brass: '#B8863F',
+        'brass-dark': '#86602A',
         stone: {
-          500: '#6B7280',
+          // Darkened from #6B7280 (4.44:1 on paper) to pass WCAG AA (5.07:1).
+          500: '#626976',
           600: '#565D6B',
         },
       },

@@ -54,39 +54,52 @@ function submit() {
             </div>
 
             <div>
-                <div v-if="inertiaPage.props.flash?.success" class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                    {{ inertiaPage.props.flash.success }}
+                <!-- Live regions stay mounted so screen readers announce new messages (WCAG 4.1.3). -->
+                <div role="status">
+                    <p v-if="inertiaPage.props.flash?.success" class="mb-4 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                        {{ inertiaPage.props.flash.success }}
+                    </p>
                 </div>
-                <div v-if="inertiaPage.props.flash?.error" class="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {{ inertiaPage.props.flash.error }}
+                <div role="alert">
+                    <p v-if="inertiaPage.props.flash?.error" class="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {{ inertiaPage.props.flash.error }}
+                    </p>
                 </div>
 
                 <form class="space-y-5" @submit.prevent="submit">
+                    <p class="text-sm text-ink/70">All fields are required.</p>
+
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-ink/80">Name</label>
-                        <input v-model="form.name" type="text" required
-                            class="w-full border-b border-ink/20 bg-transparent py-2 text-sm focus:border-brass focus:outline-none" />
-                        <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
+                        <label for="contact-name" class="mb-1 block text-sm font-medium text-ink/80">Name</label>
+                        <input id="contact-name" v-model="form.name" type="text" required autocomplete="name"
+                            :aria-invalid="form.errors.name ? 'true' : null"
+                            :aria-describedby="form.errors.name ? 'contact-name-error' : null"
+                            class="w-full border-b border-ink/50 bg-transparent py-2 text-sm focus:border-brass-dark" />
+                        <p v-if="form.errors.name" id="contact-name-error" class="mt-1 text-sm text-red-700">{{ form.errors.name }}</p>
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-ink/80">Email</label>
-                        <input v-model="form.email" type="email" required
-                            class="w-full border-b border-ink/20 bg-transparent py-2 text-sm focus:border-brass focus:outline-none" />
-                        <p v-if="form.errors.email" class="mt-1 text-sm text-red-600">{{ form.errors.email }}</p>
+                        <label for="contact-email" class="mb-1 block text-sm font-medium text-ink/80">Email</label>
+                        <input id="contact-email" v-model="form.email" type="email" required autocomplete="email"
+                            :aria-invalid="form.errors.email ? 'true' : null"
+                            :aria-describedby="form.errors.email ? 'contact-email-error' : null"
+                            class="w-full border-b border-ink/50 bg-transparent py-2 text-sm focus:border-brass-dark" />
+                        <p v-if="form.errors.email" id="contact-email-error" class="mt-1 text-sm text-red-700">{{ form.errors.email }}</p>
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-ink/80">Message</label>
-                        <textarea v-model="form.message" required rows="5"
-                            class="w-full border-b border-ink/20 bg-transparent py-2 text-sm focus:border-brass focus:outline-none"></textarea>
-                        <p v-if="form.errors.message" class="mt-1 text-sm text-red-600">{{ form.errors.message }}</p>
+                        <label for="contact-message" class="mb-1 block text-sm font-medium text-ink/80">Message</label>
+                        <textarea id="contact-message" v-model="form.message" required rows="5"
+                            :aria-invalid="form.errors.message ? 'true' : null"
+                            :aria-describedby="form.errors.message ? 'contact-message-error' : null"
+                            class="w-full border-b border-ink/50 bg-transparent py-2 text-sm focus:border-brass-dark"></textarea>
+                        <p v-if="form.errors.message" id="contact-message-error" class="mt-1 text-sm text-red-700">{{ form.errors.message }}</p>
                     </div>
 
                     <!-- Honeypot field: hidden from real users, bots often fill every input they find -->
                     <div class="hidden" aria-hidden="true">
-                        <label>Website</label>
-                        <input v-model="form.website" type="text" tabindex="-1" autocomplete="off" />
+                        <label for="contact-website">Website</label>
+                        <input id="contact-website" v-model="form.website" type="text" tabindex="-1" autocomplete="off" />
                     </div>
 
                     <button type="submit" :disabled="form.processing"

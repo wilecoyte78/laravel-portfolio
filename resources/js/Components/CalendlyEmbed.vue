@@ -88,7 +88,7 @@ onBeforeUnmount(() => {
     <div v-if="mode === 'inline'">
         <!-- Calendly needs an explicit height and a min-width of 320px. -->
         <div ref="container" :style="{ minWidth: '320px', height: height + 'px' }" />
-        <p v-if="failed" class="mt-3 text-sm text-ink/70">
+        <p v-if="failed" role="alert" class="mt-3 text-sm text-ink/70">
             The scheduler couldn't load.
             <a :href="url" target="_blank" rel="noopener" class="underline">Open it in a new tab</a>.
         </p>

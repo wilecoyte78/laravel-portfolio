@@ -16,6 +16,9 @@ defineProps({
             :keywords="page?.meta_keywords"
         />
 
+        <!-- The editor only offers H2/H3, so give every page a top-level heading (WCAG 1.3.1, 2.4.6). -->
+        <h1 v-if="page?.title" class="sr-only">{{ page.title }}</h1>
+
         <article v-if="page">
             <div class="prose max-w-none prose-headings:font-display prose-headings:font-normal prose-headings:text-ink" v-html="page.content"></div>
         </article>

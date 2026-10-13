@@ -7,6 +7,8 @@ import Image from '@tiptap/extension-image';
 
 const props = defineProps({
     modelValue: { type: String, default: '' },
+    // id of the visible label element, used to name the editor for screen readers
+    labelledBy: { type: String, default: null },
 });
 const emit = defineEmits(['update:modelValue']);
 
@@ -33,7 +35,10 @@ const editor = useEditor({
     },
     editorProps: {
         attributes: {
-            class: 'prose max-w-none min-h-[16rem] px-4 py-3 focus:outline-none',
+            class: 'prose max-w-none min-h-[16rem] px-4 py-3',
+            role: 'textbox',
+            'aria-multiline': 'true',
+            ...(props.labelledBy ? { 'aria-labelledby': props.labelledBy } : { 'aria-label': 'Content' }),
         },
     },
 });
@@ -90,26 +95,26 @@ function toggleHtmlSource() {
 </script>
 
 <template>
-    <div class="rounded-lg border border-slate-300 bg-white">
-        <div v-if="editor" class="flex flex-wrap items-center gap-1 border-b border-slate-200 p-2">
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('bold') }" @click="editor.chain().focus().toggleBold().run()"><b>B</b></button>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()"><i>I</i></button>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('strike') }" @click="editor.chain().focus().toggleStrike().run()"><s>S</s></button>
-            <span class="mx-1 h-5 w-px bg-slate-200"></span>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">H2</button>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()">H3</button>
-            <span class="mx-1 h-5 w-px bg-slate-200"></span>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('bulletList') }" @click="editor.chain().focus().toggleBulletList().run()">• List</button>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('orderedList') }" @click="editor.chain().focus().toggleOrderedList().run()">1. List</button>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" :class="{ 'is-active': editor.isActive('blockquote') }" @click="editor.chain().focus().toggleBlockquote().run()">"</button>
-            <span class="mx-1 h-5 w-px bg-slate-200"></span>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" @click="setLink">Link</button>
-            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" @click="addImage">Image</button>
-            <span class="mx-1 h-5 w-px bg-slate-200"></span>
+    <div class="rounded-lg border border-slate-500 bg-white">
+        <div v-if="editor" role="toolbar" aria-label="Formatting" class="flex flex-wrap items-center gap-1 border-b border-slate-200 p-2">
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Bold" :aria-pressed="editor.isActive('bold')" :class="{ 'is-active': editor.isActive('bold') }" @click="editor.chain().focus().toggleBold().run()"><b>B</b></button>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Italic" :aria-pressed="editor.isActive('italic')" :class="{ 'is-active': editor.isActive('italic') }" @click="editor.chain().focus().toggleItalic().run()"><i>I</i></button>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Strikethrough" :aria-pressed="editor.isActive('strike')" :class="{ 'is-active': editor.isActive('strike') }" @click="editor.chain().focus().toggleStrike().run()"><s>S</s></button>
+            <span class="mx-1 h-5 w-px bg-slate-200" aria-hidden="true"></span>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Heading 2" :aria-pressed="editor.isActive('heading', { level: 2 })" :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">H2</button>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Heading 3" :aria-pressed="editor.isActive('heading', { level: 3 })" :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()">H3</button>
+            <span class="mx-1 h-5 w-px bg-slate-200" aria-hidden="true"></span>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Bulleted list" :aria-pressed="editor.isActive('bulletList')" :class="{ 'is-active': editor.isActive('bulletList') }" @click="editor.chain().focus().toggleBulletList().run()">• List</button>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Numbered list" :aria-pressed="editor.isActive('orderedList')" :class="{ 'is-active': editor.isActive('orderedList') }" @click="editor.chain().focus().toggleOrderedList().run()">1. List</button>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Quote" :aria-pressed="editor.isActive('blockquote')" :class="{ 'is-active': editor.isActive('blockquote') }" @click="editor.chain().focus().toggleBlockquote().run()">"</button>
+            <span class="mx-1 h-5 w-px bg-slate-200" aria-hidden="true"></span>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Add or remove link" @click="setLink">Link</button>
+            <button type="button" class="toolbar-btn" :disabled="showHtmlSource" aria-label="Insert image" @click="addImage">Image</button>
+            <span class="mx-1 h-5 w-px bg-slate-200" aria-hidden="true"></span>
             <button type="button" class="toolbar-btn" :disabled="showHtmlSource" @click="editor.chain().focus().undo().run()">Undo</button>
             <button type="button" class="toolbar-btn" :disabled="showHtmlSource" @click="editor.chain().focus().redo().run()">Redo</button>
-            <span class="mx-1 h-5 w-px bg-slate-200"></span>
-            <button type="button" class="toolbar-btn font-mono" :class="{ 'is-active': showHtmlSource }" @click="toggleHtmlSource">
+            <span class="mx-1 h-5 w-px bg-slate-200" aria-hidden="true"></span>
+            <button type="button" class="toolbar-btn font-mono" :class="{ 'is-active': showHtmlSource }" :aria-pressed="showHtmlSource" @click="toggleHtmlSource">
                 {{ showHtmlSource ? 'Apply HTML' : '</> Edit HTML' }}
             </button>
         </div>
@@ -117,7 +122,9 @@ function toggleHtmlSource() {
         <textarea
             v-if="showHtmlSource"
             v-model="htmlSource"
-            class="min-h-[16rem] w-full resize-y px-4 py-3 font-mono text-sm focus:outline-none"
+            :aria-labelledby="labelledBy"
+            :aria-label="labelledBy ? null : 'HTML source'"
+            class="min-h-[16rem] w-full resize-y px-4 py-3 font-mono text-sm"
             placeholder="Paste raw HTML here, then click &quot;Apply HTML&quot; above"
         ></textarea>
         <EditorContent v-else :editor="editor" />

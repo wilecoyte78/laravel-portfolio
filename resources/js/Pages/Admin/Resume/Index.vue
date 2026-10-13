@@ -98,9 +98,9 @@ function uploadResume() {
 
         <div class="max-w-5xl">
             <div class="mb-6">
-                <h2 class="text-xl font-semibold text-slate-900">
+                <h1 class="text-xl font-semibold text-slate-900">
                     Resume
-                </h2>
+                </h1>
 
                 <p class="mt-1 text-sm text-slate-500">
                     Upload and manage the PDF displayed on the public resume page.
@@ -112,9 +112,9 @@ function uploadResume() {
                 <div class="overflow-hidden rounded-lg border border-slate-200 bg-white">
                     <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
                         <div>
-                            <h3 class="text-sm font-semibold text-slate-900">
+                            <h2 class="text-sm font-semibold text-slate-900">
                                 Current Resume
-                            </h3>
+                            </h2>
 
                             <p
                                 v-if="resume"
@@ -136,9 +136,9 @@ function uploadResume() {
                             :href="resumeUrl"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                            class="rounded-md border border-slate-500 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
                         >
-                            Open PDF
+                            Open PDF<span class="sr-only"> (opens in a new tab)</span>
                         </a>
                     </div>
 
@@ -171,9 +171,9 @@ function uploadResume() {
 
                 <!-- Upload -->
                 <div class="h-fit rounded-lg border border-slate-200 bg-white p-5">
-                    <h3 class="text-sm font-semibold text-slate-900">
+                    <h2 class="text-sm font-semibold text-slate-900">
                         Upload Resume
-                    </h3>
+                    </h2>
 
                     <p class="mt-1 text-sm leading-6 text-slate-500">
                         Upload a PDF to create or replace the current resume.
@@ -207,12 +207,14 @@ function uploadResume() {
                         type="file"
                         accept="application/pdf,.pdf"
                         class="hidden"
+                        aria-hidden="true"
+                        tabindex="-1"
                         @change="handleFileChange"
                     />
 
                     <button
                         type="button"
-                        class="mt-5 w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                        class="mt-5 w-full rounded-md border border-slate-500 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                         @click="chooseFile"
                     >
                         Choose PDF
@@ -220,6 +222,7 @@ function uploadResume() {
 
                     <div
                         v-if="selectedFilename"
+                        role="status"
                         class="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3"
                     >
                         <div class="text-xs text-slate-500">
@@ -246,6 +249,7 @@ function uploadResume() {
 
                     <div
                         v-if="form.errors.resume"
+                        role="alert"
                         class="mt-3 rounded-md bg-red-50 p-3 text-sm text-red-700"
                     >
                         {{ form.errors.resume }}
