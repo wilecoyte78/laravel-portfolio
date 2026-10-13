@@ -11,7 +11,7 @@ const props = defineProps({
 <template>
     <AdminLayout>
         <Head title="Dashboard" />
-        <h2 class="mb-6 text-xl font-semibold text-slate-900">Dashboard</h2>
+        <h1 class="mb-6 text-xl font-semibold text-slate-900">Dashboard</h1>
         <div class="grid grid-cols-2 gap-4 sm:max-w-md">
             <div class="rounded-lg border border-slate-200 bg-white p-5">
                 <div class="text-2xl font-bold text-slate-900">{{ stats.total_pages }}</div>
@@ -24,9 +24,9 @@ const props = defineProps({
         </div>
 
         <div class="mt-8 max-w-md rounded-lg border border-slate-200 bg-white p-5">
-            <h3 class="mb-2 text-sm font-semibold text-slate-900">Contact form (Gmail)</h3>
+            <h2 class="mb-2 text-sm font-semibold text-slate-900">Contact form (Gmail)</h2>
             <p v-if="gmailConnected" class="text-sm text-emerald-700">
-                ✓ Connected — contact form messages will be emailed via Gmail.
+                <span aria-hidden="true">✓</span> Connected — contact form messages will be emailed via Gmail.
             </p>
             <p v-else class="text-sm text-slate-500">
                 Not connected yet. Connect a Gmail account so the contact form can send you messages.

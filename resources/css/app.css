@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Accessibility (WCAG 2.2 AA) ------------------------------------------- */
+
+/* Keep focused elements from hiding under the sticky public header (2.4.11). */
+html {
+  scroll-padding-top: 6rem;
+}
+
+/* Visible keyboard focus everywhere (2.4.7). #86602A is brass-dark, which has
+   at least 3:1 contrast against both the paper and white backgrounds. */
+:focus-visible {
+  outline: 2px solid #86602A;
+  outline-offset: 2px;
+}
+
+/* Respect users who ask for less motion (2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Basic styling for admin-authored WYSIWYG content rendered on public pages */
 .prose img {
   border-radius: 0.5rem;

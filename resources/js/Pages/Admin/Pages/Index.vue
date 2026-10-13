@@ -17,7 +17,7 @@ function destroy(page) {
     <AdminLayout>
         <Head title="Pages" />
         <div class="mb-6 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-slate-900">Pages</h2>
+            <h1 class="text-xl font-semibold text-slate-900">Pages</h1>
             <Link :href="route('admin.pages.create')" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
                 New page
             </Link>
@@ -25,12 +25,13 @@ function destroy(page) {
 
         <div class="overflow-hidden rounded-lg border border-slate-200 bg-white">
             <table class="w-full text-sm">
+                <caption class="sr-only">Pages</caption>
                 <thead class="bg-slate-50 text-left text-slate-500">
                     <tr>
-                        <th class="px-4 py-3 font-medium">Title</th>
-                        <th class="px-4 py-3 font-medium">Slug</th>
-                        <th class="px-4 py-3 font-medium">Status</th>
-                        <th class="px-4 py-3"></th>
+                        <th scope="col" class="px-4 py-3 font-medium">Title</th>
+                        <th scope="col" class="px-4 py-3 font-medium">Slug</th>
+                        <th scope="col" class="px-4 py-3 font-medium">Status</th>
+                        <th scope="col" class="px-4 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -40,18 +41,18 @@ function destroy(page) {
                         <td class="px-4 py-3">
                             <span
                                 class="rounded-full px-2 py-0.5 text-xs font-medium"
-                                :class="page.is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'"
+                                :class="page.is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'"
                             >
                                 {{ page.is_published ? 'Published' : 'Draft' }}
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <Link :href="route('admin.pages.edit', page.id)" class="mr-3 text-slate-600 hover:text-slate-900">Edit</Link>
-                            <button class="text-red-600 hover:text-red-800" @click="destroy(page)">Delete</button>
+                            <Link :href="route('admin.pages.edit', page.id)" class="mr-3 text-slate-600 hover:text-slate-900">Edit<span class="sr-only"> {{ page.title }}</span></Link>
+                            <button type="button" class="text-red-600 hover:text-red-800" @click="destroy(page)">Delete<span class="sr-only"> {{ page.title }}</span></button>
                         </td>
                     </tr>
                     <tr v-if="!pages.length">
-                        <td colspan="4" class="px-4 py-8 text-center text-slate-400">No pages yet.</td>
+                        <td colspan="4" class="px-4 py-8 text-center text-slate-500">No pages yet.</td>
                     </tr>
                 </tbody>
             </table>

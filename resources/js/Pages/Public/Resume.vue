@@ -57,7 +57,7 @@ const resumePdf = computed(() => {
                         rel="noopener noreferrer"
                         class="rounded-lg bg-stone-800 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700"
                     >
-                        Open PDF
+                        Open PDF<span class="sr-only"> (opens in a new tab)</span>
                     </a>
 
                     <a
@@ -76,7 +76,7 @@ const resumePdf = computed(() => {
                 >
                     <iframe
                         :src="resumePdf"
-                        title="Resume PDF"
+                        title="Resume (PDF document)"
                         class="block h-[80vh] min-h-[800px] w-full"
                     ></iframe>
                 </div>

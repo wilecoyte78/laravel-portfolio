@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick, onBeforeUnmount } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { toast } from 'vue3-toastify';
@@ -28,6 +28,8 @@ const currentTargetLabel = computed(() => {
 });
 
 const showModal = ref(false);
+const dialogRef = ref(null);
+let returnFocusTo = null;
 const modalMode = ref('add'); // 'add' | 'edit'
 const editingItem = ref(null);
 
@@ -44,7 +46,7 @@ function openAddForm(parentId = null) {
     editingItem.value = null;
     form.reset();
     form.parent_id = parentId;
-    showModal.value = true;
+    openModal();
 }
 
 function openEditForm(item) {
@@ -55,8 +57,50 @@ function openEditForm(item) {
     form.page_id = item.page_id ?? '';
     form.external_url = item.external_url ?? '';
     form.target = item.target;
-    showModal.value = true;
+    openModal();
 }
+
+// --- Accessible dialog (WCAG 2.1.1, 2.1.2, 2.4.3, 4.1.2) ---------------
+// Move focus into the dialog, keep Tab inside it, close on Escape, and
+// return focus to the button that opened it.
+function openModal() {
+    returnFocusTo = document.activeElement;
+    showModal.value = true;
+    document.addEventListener('keydown', onDialogKeydown);
+    nextTick(() => dialogRef.value?.querySelector('input, select, textarea, button')?.focus());
+}
+
+function closeModal() {
+    showModal.value = false;
+    document.removeEventListener('keydown', onDialogKeydown);
+    nextTick(() => returnFocusTo?.focus?.());
+}
+
+function onDialogKeydown(e) {
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+    }
+
+    if (e.key !== 'Tab' || !dialogRef.value) return;
+
+    const focusable = [...dialogRef.value.querySelectorAll('input, select, textarea, button:not([disabled]), a[href]')];
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+    }
+}
+
+onBeforeUnmount(() => document.removeEventListener('keydown', onDialogKeydown));
 
 function getTargetLabel(targetValue) {
     const match = props.targets.find(t => t.value === targetValue);
@@ -68,14 +112,14 @@ function submit() {
     if (modalMode.value === 'edit') {
         form.put(route('admin.navigation.update', editingItem.value.id), {
             onSuccess: () => {
-                showModal.value = false;
+                closeModal();
                 form.reset();
             },
         });
     } else {
         form.post(route('admin.navigation.store'), {
             onSuccess: () => {
-                showModal.value = false;
+                closeModal();
                 form.reset();
             },
         });
@@ -121,8 +165,8 @@ function findSiblings(nodes, parentId) {
     <AdminLayout>
         <Head title="Navigation" />
         <div class="mb-6 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-slate-900">Navigation</h2>
-            <button class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" @click="openAddForm(null)">
+            <h1 class="text-xl font-semibold text-slate-900">Navigation</h1>
+            <button type="button" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" @click="openAddForm(null)">
                 Add top-level item
             </button>
         </div>
@@ -138,19 +182,19 @@ function findSiblings(nodes, parentId) {
                 <div class="flex items-center justify-between">
                     <div>
                         <span class="font-medium text-slate-900">{{ item.label }}</span>
-                        <span class="ml-2 text-xs text-slate-400">
+                        <span class="ml-2 text-xs text-slate-500">
                             {{ item.page ? '/' + item.page.slug : (item.external_url || 'no link — dropdown header') }}
                         </span>
-                        <span class="ml-2 text-xs text-slate-400">
+                        <span class="ml-2 text-xs text-slate-500">
                             target="{{ item.target }}": {{ getTargetLabel(item.target) }}
                         </span>
                     </div>
                     <div class="flex items-center gap-3 text-sm">
-                        <button class="text-slate-400 hover:text-slate-700" @click="move(item, -1)">↑</button>
-                        <button class="text-slate-400 hover:text-slate-700" @click="move(item, 1)">↓</button>
-                        <button class="text-slate-600 hover:text-slate-900" @click="openEditForm(item)">Edit</button>
-                        <button class="text-slate-600 hover:text-slate-900" @click="openAddForm(item.id)">+ sub-item</button>
-                        <button class="text-red-600 hover:text-red-800" @click="destroy(item)">Delete</button>
+                        <button type="button" class="min-h-6 min-w-6 text-slate-500 hover:text-slate-700" :aria-label="`Move ${item.label} up`" @click="move(item, -1)"><span aria-hidden="true">↑</span></button>
+                        <button type="button" class="min-h-6 min-w-6 text-slate-500 hover:text-slate-700" :aria-label="`Move ${item.label} down`" @click="move(item, 1)"><span aria-hidden="true">↓</span></button>
+                        <button type="button" class="text-slate-600 hover:text-slate-900" @click="openEditForm(item)">Edit<span class="sr-only"> {{ item.label }}</span></button>
+                        <button type="button" class="text-slate-600 hover:text-slate-900" @click="openAddForm(item.id)"><span aria-hidden="true">+</span> sub-item<span class="sr-only"> under {{ item.label }}</span></button>
+                        <button type="button" class="text-red-600 hover:text-red-800" @click="destroy(item)">Delete<span class="sr-only"> {{ item.label }}</span></button>
                     </div>
                 </div>
 
@@ -158,62 +202,70 @@ function findSiblings(nodes, parentId) {
                     <div v-for="child in item.children" :key="child.id" class="flex items-center justify-between text-sm">
                         <div>
                             <span class="text-slate-800">{{ child.label }}</span>
-                            <span class="ml-2 text-xs text-slate-400">
+                            <span class="ml-2 text-xs text-slate-500">
                                 {{ child.page ? '/' + child.page.slug : (child.external_url || '—') }}
                             </span>
-                            <span class="ml-2 text-xs text-slate-400">
+                            <span class="ml-2 text-xs text-slate-500">
                                 target="{{ child.target }}": {{ getTargetLabel(child.target) }}
                             </span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <button class="text-slate-400 hover:text-slate-700" @click="move(child, -1)">↑</button>
-                            <button class="text-slate-400 hover:text-slate-700" @click="move(child, 1)">↓</button>
-                            <button class="text-slate-600 hover:text-slate-900" @click="openEditForm(child)">Edit</button>
-                            <button class="text-red-600 hover:text-red-800" @click="destroy(child)">Delete</button>
+                            <button type="button" class="min-h-6 min-w-6 text-slate-500 hover:text-slate-700" :aria-label="`Move ${child.label} up`" @click="move(child, -1)"><span aria-hidden="true">↑</span></button>
+                            <button type="button" class="min-h-6 min-w-6 text-slate-500 hover:text-slate-700" :aria-label="`Move ${child.label} down`" @click="move(child, 1)"><span aria-hidden="true">↓</span></button>
+                            <button type="button" class="text-slate-600 hover:text-slate-900" @click="openEditForm(child)">Edit<span class="sr-only"> {{ child.label }}</span></button>
+                            <button type="button" class="text-red-600 hover:text-red-800" @click="destroy(child)">Delete<span class="sr-only"> {{ child.label }}</span></button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div v-if="!tree.length" class="rounded-lg border border-dashed border-slate-300 p-8 text-center text-slate-400">
+            <div v-if="!tree.length" class="rounded-lg border border-dashed border-slate-400 p-8 text-center text-slate-500">
                 No navigation items yet.
             </div>
         </div>
 
         <!-- Add / Edit item modal -->
         <div v-if="showModal" class="fixed inset-0 z-30 flex items-center justify-center bg-black/30 p-4">
-            <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-                <h3 class="mb-4 text-lg font-semibold text-slate-900">
+            <div
+                ref="dialogRef"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="nav-dialog-title"
+                class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl"
+            >
+                <h2 id="nav-dialog-title" class="mb-4 text-lg font-semibold text-slate-900">
                     {{ modalMode === 'edit' ? `Edit "${editingItem?.label}"` : (form.parent_id ? 'Add sub-item' : 'Add top-level item') }}
-                </h3>
+                </h2>
                 <form class="space-y-4" @submit.prevent="submit">
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-slate-700">Label</label>
-                        <input v-model="form.label" type="text" required placeholder="e.g. Bio"
-                            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
-                        <p v-if="form.errors.label" class="mt-1 text-sm text-red-600">{{ form.errors.label }}</p>
+                        <label for="nav-label" class="mb-1 block text-sm font-medium text-slate-700">Label</label>
+                        <input id="nav-label" v-model="form.label"
+                            :aria-invalid="form.errors.label ? 'true' : null"
+                            :aria-describedby="form.errors.label ? 'nav-label-error' : null" type="text" required placeholder="e.g. Bio"
+                            class="w-full rounded-md border border-slate-500 px-3 py-2 text-sm" />
+                        <p v-if="form.errors.label" id="nav-label-error" class="mt-1 text-sm text-red-600">{{ form.errors.label }}</p>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-slate-700">
-                            Page <span class="font-normal text-slate-400">(leave empty for a dropdown header)</span>
+                        <label for="nav-page" class="mb-1 block text-sm font-medium text-slate-700">
+                            Page <span class="font-normal text-slate-500">(leave empty for a dropdown header)</span>
                         </label>
-                        <select v-model="form.page_id" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                        <select id="nav-page" v-model="form.page_id" class="w-full rounded-md border border-slate-500 px-3 py-2 text-sm">
                             <option value="">— No page (header only) —</option>
                             <option v-for="page in pages" :key="page.id" :value="page.id">{{ page.title }}</option>
                         </select>
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-slate-700">
-                            Or external URL <span class="font-normal text-slate-400">(optional)</span>
+                        <label for="nav-external-url" class="mb-1 block text-sm font-medium text-slate-700">
+                            Or external URL <span class="font-normal text-slate-500">(optional)</span>
                         </label>
-                        <input v-model="form.external_url" type="text" placeholder="https://..."
-                            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+                        <input id="nav-external-url" v-model="form.external_url" type="text" inputmode="url" placeholder="https://..."
+                            class="w-full rounded-md border border-slate-500 px-3 py-2 text-sm" />
                     </div>
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-slate-700">
-                            Or Target <span class="font-normal text-slate-400">(optional)</span>
+                        <label for="nav-target" class="mb-1 block text-sm font-medium text-slate-700">
+                            Or Target <span class="font-normal text-slate-500">(optional)</span>
                         </label>
-                        <select v-model="form.target" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+                        <select id="nav-target" v-model="form.target" :aria-describedby="currentTargetLabel ? 'target-help' : null" class="w-full rounded-md border border-slate-500 px-3 py-2 text-sm">
                             <option v-for="target in targets" :key="target.value" :value="target.value">
                                 {{ target.value }}
                             </option>
@@ -224,7 +276,7 @@ function findSiblings(nodes, parentId) {
                         </p>
                     </div>
                     <div class="flex justify-end gap-3 pt-2">
-                        <button type="button" class="text-sm text-slate-500" @click="showModal = false">Cancel</button>
+                        <button type="button" class="text-sm text-slate-600 hover:text-slate-900" @click="closeModal">Cancel</button>
                         <button type="submit" :disabled="form.processing"
                             class="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50">
                             {{ modalMode === 'edit' ? 'Save changes' : 'Add' }}

@@ -26,25 +26,29 @@ function applyFilters(changes) {
 
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
-                <h2 class="text-xl font-semibold text-slate-900">Logs</h2>
+                <h1 class="text-xl font-semibold text-slate-900">Logs</h1>
                 <p class="mt-1 text-sm text-slate-500">
                     Showing {{ logs.length }} of {{ total }} entries
                 </p>
             </div>
 
             <div class="flex gap-2">
+                <label for="log-level" class="sr-only">Log level</label>
                 <select
+                    id="log-level"
                     :value="currentLevel ?? ''"
-                    class="rounded-md border border-slate-300 px-3 py-1.5 text-sm capitalize"
+                    class="rounded-md border border-slate-500 px-3 py-1.5 text-sm capitalize"
                     @change="applyFilters({ level: $event.target.value })"
                 >
                     <option value="">All levels</option>
                     <option v-for="level in levels" :key="level" :value="level">{{ level }}</option>
                 </select>
 
+                <label for="log-file" class="sr-only">Log file</label>
                 <select
+                    id="log-file"
                     :value="currentFile"
-                    class="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+                    class="rounded-md border border-slate-500 px-3 py-1.5 text-sm"
                     @change="applyFilters({ file: $event.target.value })"
                 >
                     <option v-for="file in files" :key="file" :value="file">{{ file }}</option>
@@ -53,11 +57,12 @@ function applyFilters(changes) {
 </div>
         <div class="overflow-hidden rounded-lg border border-slate-200 bg-white">
             <table class="min-w-full divide-y divide-slate-200 text-sm">
+                <caption class="sr-only">Log entries</caption>
                 <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                     <tr>
-                        <th class="px-4 py-3">Level</th>
-                        <th class="px-4 py-3">Date</th>
-                        <th class="px-4 py-3">Message</th>
+                        <th scope="col" class="px-4 py-3">Level</th>
+                        <th scope="col" class="px-4 py-3">Date</th>
+                        <th scope="col" class="px-4 py-3">Message</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">

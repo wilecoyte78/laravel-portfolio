@@ -87,7 +87,7 @@ const focusAreas = [
         />
 
         <section aria-labelledby="projects-heading">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brass">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brass-dark">
                 Selected work
             </p>
             <div class="max-w-3xl">
@@ -126,7 +126,7 @@ const focusAreas = [
                         Personal builds and selected professional engineering work.
                     </p>
                 </div>
-                <span class="hidden text-sm text-stone-400 sm:inline">01 — 03</span>
+                <span aria-hidden="true" class="hidden text-sm text-stone-500 sm:inline">01 — 03</span>
             </div>
 
             <div class="space-y-6">
@@ -136,12 +136,12 @@ const focusAreas = [
                     class="rounded-xl border border-ink/10 bg-white/60 p-5 sm:p-7"
                 >
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
-                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-ink text-sm font-semibold text-white">
+                        <div aria-hidden="true" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-ink text-sm font-semibold text-white">
                             {{ project.number }}
                         </div>
 
                         <div class="min-w-0 flex-1">
-                            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-brass">
+                            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-brass-dark">
                                 {{ project.category }}
                             </p>
                             <h3 class="mt-2 font-display text-2xl text-ink">
@@ -162,25 +162,26 @@ const focusAreas = [
                                 </li>
                             </ul>
 
-                            <div class="mt-5 flex flex-wrap gap-2">
-                                <span
+                            <ul class="mt-5 flex flex-wrap gap-2" :aria-label="`Technologies used in ${project.title}`">
+                                <li
                                     v-for="technology in project.technologies"
                                     :key="technology"
                                     class="rounded-full border border-ink/10 bg-paper px-3 py-1 text-xs text-stone-600"
                                 >
                                     {{ technology }}
-                                </span>
-                            </div>
+                                </li>
+                            </ul>
 
                             <a
                                 v-if="project.link"
                                 :href="project.link"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ink underline decoration-brass decoration-2 underline-offset-4 hover:text-brass"
+                                class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ink underline decoration-brass decoration-2 underline-offset-4 hover:text-brass-dark"
                             >
                                 {{ project.linkLabel }}
                                 <span aria-hidden="true">↗</span>
+                                <span class="sr-only">(opens in a new tab)</span>
                             </a>
                             <p v-else class="mt-6 text-xs text-stone-500">
                                 {{ project.category.includes('Professional') ? 'Details are generalized to respect employer confidentiality.' : 'Independent project in active development.' }}

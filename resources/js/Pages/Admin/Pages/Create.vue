@@ -22,34 +22,38 @@ function submit() {
 <template>
     <AdminLayout>
         <Head title="New page" />
-        <h2 class="mb-6 text-xl font-semibold text-slate-900">New page</h2>
+        <h1 class="mb-6 text-xl font-semibold text-slate-900">New page</h1>
 
         <form class="max-w-3xl space-y-5" @submit.prevent="submit">
             <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700">Title</label>
-                <input v-model="form.title" type="text" required
-                    class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
-                <p v-if="form.errors.title" class="mt-1 text-sm text-red-600">{{ form.errors.title }}</p>
+                <label for="page-title" class="mb-1 block text-sm font-medium text-slate-700">Title</label>
+                <input id="page-title" v-model="form.title"
+                    :aria-invalid="form.errors.title ? 'true' : null"
+                    :aria-describedby="form.errors.title ? 'page-title-error' : null" type="text" required
+                    class="w-full rounded-md border border-slate-500 px-3 py-2 text-sm" />
+                <p v-if="form.errors.title" id="page-title-error" class="mt-1 text-sm text-red-600">{{ form.errors.title }}</p>
             </div>
 
             <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700">
-                    Slug <span class="font-normal text-slate-400">(leave blank to auto-generate)</span>
+                <label for="page-slug" class="mb-1 block text-sm font-medium text-slate-700">
+                    Slug <span class="font-normal text-slate-500">(leave blank to auto-generate)</span>
                 </label>
-                <input v-model="form.slug" type="text" placeholder="e.g. bio"
-                    class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
-                <p v-if="form.errors.slug" class="mt-1 text-sm text-red-600">{{ form.errors.slug }}</p>
+                <input id="page-slug" v-model="form.slug"
+                    :aria-invalid="form.errors.slug ? 'true' : null"
+                    :aria-describedby="form.errors.slug ? 'page-slug-error' : null" type="text" placeholder="e.g. bio"
+                    class="w-full rounded-md border border-slate-500 px-3 py-2 text-sm" />
+                <p v-if="form.errors.slug" id="page-slug-error" class="mt-1 text-sm text-red-600">{{ form.errors.slug }}</p>
             </div>
 
             <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700">Content</label>
-                <WysiwygEditor v-model="form.content" />
+                <span id="page-content-label" class="mb-1 block text-sm font-medium text-slate-700">Content</span>
+                <WysiwygEditor v-model="form.content" labelled-by="page-content-label" />
             </div>
 
             <SeoFields :form="form" />
 
             <label class="flex items-center gap-2 text-sm text-slate-700">
-                <input v-model="form.is_published" type="checkbox" class="rounded border-slate-300" />
+                <input v-model="form.is_published" type="checkbox" class="rounded border-slate-500" />
                 Published
             </label>
 
