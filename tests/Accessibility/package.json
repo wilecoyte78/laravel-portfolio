@@ -1,0 +1,14 @@
+{
+  "name": "laravel-portfolio-accessibility-checks",
+  "private": true,
+  "type": "module",
+  "description": "Renders laravel-portfolio's public Vue pages and runs axe-core WCAG 2.2 AA checks on them.",
+  "scripts": {
+    "check": "node run.mjs",
+    "contrast": "python3 contrast.py"
+  },
+  "dependencies": {
+    "axe-core": "^4.10.0",
+    "jsdom": "^25.0.0"
+  }
+}
