@@ -13,7 +13,7 @@ import NavBar from '@/Components/NavBar.vue';
 const page = usePage();
 const navigation = computed(() => page.props.navigation ?? []);
 
-const GA_MEASUREMENT_ID = 'G-9YHNV829K1';
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
 const appName = import.meta.env.VITE_APP_NAME;
 
@@ -29,9 +29,8 @@ function focusMainAfterNavigation() {
     lastPathname = pathname;
 }
 
-onMounted(() => {
-    focusMainAfterNavigation();
-
+function loadAnalytics() {
+    if (!GA_MEASUREMENT_ID) return;
     if (document.getElementById('ga-gtag-script')) return;
 
     const script = document.createElement('script');
@@ -44,6 +43,11 @@ onMounted(() => {
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
     window.gtag('config', GA_MEASUREMENT_ID);
+}
+
+onMounted(() => {
+    focusMainAfterNavigation();
+    loadAnalytics();
 });
 </script>
 
